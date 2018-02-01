@@ -114,7 +114,7 @@ def login(org_slug=None):
         elif settings.LDAP_LOGIN_ENABLED:
             return redirect(url_for("ldap_auth.login", next=next_path))
         else:
-            return redirect(url_for("google_oauth.authorize", next=next_path))
+            return redirect(get_google_auth_url(next_path))
 
     if request.method == 'POST':
         try:
@@ -175,7 +175,8 @@ def client_config():
         'autoPublishNamedQueries': settings.FEATURE_AUTO_PUBLISH_NAMED_QUERIES,
         'dateFormat': date_format,
         'dateTimeFormat': "{0} HH:mm".format(date_format),
-        'mailSettingsMissing': settings.MAIL_DEFAULT_SENDER is None
+        'mailSettingsMissing': settings.MAIL_DEFAULT_SENDER is None,
+        'dashboardRefreshIntervals': settings.DASHBOARD_REFRESH_INTERVALS
     }
 
     client_config.update(defaults)

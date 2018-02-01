@@ -1,7 +1,7 @@
 // This polyfill is needed to support PhantomJS which we use to generate PNGs from embeds.
 import 'core-js/fn/typed/array-buffer';
 
-import 'pace-progress';
+import * as Pace from 'pace-progress';
 import debug from 'debug';
 import angular from 'angular';
 import ngSanitize from 'angular-sanitize';
@@ -29,6 +29,14 @@ import dateTimeFilter from '@/filters/datetime';
 import dashboardGridOptions from './dashboard-grid-options';
 
 const logger = debug('redash:config');
+
+Pace.options.shouldHandlePushState = (prevUrl, newUrl) => {
+  // Show pace progress bar only if URL path changed; when query params
+  // or hash changed - ignore that history event
+  const [prevPrefix] = prevUrl.split('?');
+  const [newPrefix] = newUrl.split('?');
+  return prevPrefix !== newPrefix;
+};
 
 const requirements = [
   ngRoute,
@@ -58,6 +66,12 @@ function registerAll(context) {
     .map(module => module.default);
 
   return modules.filter(isFunction).map(f => f(ngModule));
+}
+
+function requireImages() {
+  // client/app/assets/images/<path> => /img/<path>
+  const ctx = require.context('@/assets/images/', true, /\.(png|jpe?g|gif|svg)$/);
+  ctx.keys().forEach(ctx);
 }
 
 function registerComponents() {
@@ -97,6 +111,7 @@ function registerFilters() {
   });
 }
 
+requireImages();
 registerDirectives(ngModule);
 registerServices();
 registerFilters();
