@@ -3,7 +3,7 @@
 
   <div ng-show="selectedTab == 'profile'">
     <div class="row">
-      <div class="col-md-4 col-md-offset-4 profile__cointainer">
+      <div class="col-md-4 col-md-offset-4 profile__container">
 
         <img ng-src="{{user.profile_image_url}}" class="profile__image"/>
 
@@ -82,7 +82,7 @@
             <p ng-if="clientConfig.mailSettingsMissing">
               You don't have mail server configured, please send the following link
               to {{user.name}} to reset their password:<br/>
-              <a ng-href="passwordResetLink">{{passwordResetLink}}</a>
+              <textarea class="form-control m-t-10" rows="2" readonly>{{ passwordResetLink }}</textarea>
             </p>
           </div>
         </div>

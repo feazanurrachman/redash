@@ -68,7 +68,7 @@ class Athena(BaseQueryRunner):
                 },
                 's3_staging_dir': {
                     'type': 'string',
-                    'title': 'S3 Staging Path'
+                    'title': 'S3 Staging (Query Results) Bucket Path'
                 },
                 'schema': {
                     'type': 'string',
@@ -125,9 +125,11 @@ class Athena(BaseQueryRunner):
                 region_name=self.configuration['region']
                 )
         schema = {}
+        paginator = client.get_paginator('get_tables')
 
         for database in client.get_databases()['DatabaseList']:
-            for table in client.get_tables(DatabaseName=database['Name'])['TableList']:
+            iterator = paginator.paginate(DatabaseName=database['Name'])
+            for table in iterator.search('TableList[]'):
                 table_name = '%s.%s' % (database['Name'], table['Name'])
                 if table_name not in schema:
                     column = [columns['Name'] for columns in table['StorageDescriptor']['Columns']]
