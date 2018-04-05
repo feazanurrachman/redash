@@ -14,7 +14,7 @@ from redash.handlers.query_results import run_query
 from redash.permissions import (can_modify, not_view_only, require_access,
                                 require_admin_or_owner,
                                 require_object_modify_permission,
-                                require_permission, view_only)
+                                require_permission, view_only, deny_supplier_access)
 from redash.utils import collect_parameters_from_request
 
 
@@ -227,6 +227,8 @@ class QueryResource(BaseResource):
 
         Responds with the :ref:`query <query-response-label>` contents.
         """
+
+        deny_supplier_access(self.current_user)
         q = get_object_or_404(models.Query.get_by_id_and_org, query_id, self.current_org)
         require_access(q.groups, self.current_user, view_only)
 

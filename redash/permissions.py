@@ -35,6 +35,18 @@ def require_access(object_groups, user, need_view_only):
         abort(403)
 
 
+def is_supplier(user):
+    if 'supplier' in user.permissions:
+        return True
+    else:
+        return False
+
+
+def deny_supplier_access(user):
+    if is_supplier(user):
+        abort(403)
+
+
 class require_permissions(object):
     def __init__(self, permissions):
         self.permissions = permissions
