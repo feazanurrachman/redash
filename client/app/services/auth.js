@@ -99,6 +99,8 @@ function CurrentUserService() {
 
   this.hasPermission = permission => this.permissions.indexOf(permission) !== -1;
 
+  this.isSupplier = this.hasPermission('supplier');
+
   this.isAdmin = this.hasPermission('admin');
 }
 
